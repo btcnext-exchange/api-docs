@@ -188,6 +188,8 @@ Update:
 
 #### <span id="assetsData">1. Assets data</span>
 
+The assets endpoint is to provide a detailed summary for each currency available on the exchange.
+
 - Interface
 
 ```
@@ -195,44 +197,53 @@ Path: /api/v1/assets
 Request type: GET
 ```
 
-- Parameter
-```
-no
-```
+- Assets response descriptions:
 
-- Return result
-```
-name - asset abbreviation
-can_withdraw - "true" or "false", if true, the asset can be withdrawn
-can_deposit - "true" or "false", if true, the asset can be deposited
-min_withdraw - minimum withdrawal/deposit amount
-max_withdraw - maximum withdrawal/deposit amount
-```
+| Name                     |  Type    | Description                                                          |
+| ------------------------ |:--------:| ---------------------------------------------------------------------|
+| name                     | string   | Full name of cryptocurrency                                          |
+| can_withdraw             | boolean  | Identifies whether withdrawals are enabled or disabled               |
+| can_deposit              | boolean  | Identifies whether deposits are enabled or disabled                  |
+| min_withdraw             | decimal  | Identifies the single minimum withdrawal amount of a cryptocurrency  |
+| max_withdraw             | decimal  | Identifies the single maximum withdrawal amount of a cryptocurrency  |
+| unified_cryptoasset_id   | integer  | Unique ID of cryptocurrency assigned by Unified Cryptoasset ID.      |
 
 - Examples of returned results:
-```
- {
-  "ETH": {
-    "name": "eth",
+
+````json
+{
+  "CNYQ": {
+    "name": "cnyq",
     "can_withdraw": "true",
     "can_deposit": "true",
     "min_withdraw": "0.00000001",
-    "max_withdraw": "100000000"
+    "max_withdraw": "100000000",
+    "unified_cryptoasset_id": null
   },
-  
-  "NOAH ARK": {
-    "name": "noah ark",
-    "can_withdraw": "false",
-    "can_deposit": "false",
+  "XEM": {
+    "name": "xem",
+    "can_withdraw": "true",
+    "can_deposit": "true",
     "min_withdraw": "0.00000001",
-    "max_withdraw": "100000000"
+    "max_withdraw": "100000000",
+    "unified_cryptoasset_id": 873
+  },
+  "PRIZM": {
+    "name": "prizm",
+    "can_withdraw": "true",
+    "can_deposit": "true",
+    "min_withdraw": "0.00000001",
+    "max_withdraw": "100000000",
+    "unified_cryptoasset_id": null
   }
 }
-```
+````
 
 ---
 
 #### <span id="summaryInfo">2. All summary information</span>
+
+The summary endpoint is to provide an overview of market data for all tickers and all market pairs on the exchange.
 
 - Interface
 
@@ -240,45 +251,69 @@ max_withdraw - maximum withdrawal/deposit amount
 Path: /api/v1/summary
 Request type: GET
 ```
-- Parameter
-```
-no
-```
 
-- Return result
-```
-id - exchange pairs tickers
-last - final transaction price
-lowestAsk - current lowest bid price
-highestBid - current highest bid price
-percentChange - percentage of price change
-base_volume - average price over last 24h
-quote_volume - total 24h traded quote cost
-isFrozen - frozen status: 0 — working, 1 — temporarily suspended
-high24hr - highest price in the last 24 hours
-low24hr - lowest price in the last 24 hours
-```
+- Summary response descriptions:
+
+| Name                     |  Type    | Description                                                                                              |
+| ------------------------ |:--------:| ---------------------------------------------------------------------------------------------------------|
+| trading_pairs            | string   | Identifier of a ticker with delimiter to separate base/quote, eg. BTC-USD (Price of BTC is quoted in USD)|
+| last_price               | decimal  | Last transacted price of base currency based on given quote currency                                     |
+| lowest_ask               | decimal  | Lowest Ask price of base currency based on given quote currency                                          |
+| highest_bid              | decimal  | Highest bid price of base currency based on given quote currency                                         |
+| base_volume              | decimal  | 24-hr volume of market pair denoted in BASE currency                                                     |
+| quote_volume             | decimal  | 24-hr volume of market pair denoted in QUOTE currency                                                    |
+| price_change_percent_24h | decimal  | 24-hr volume of market pair denoted in QUOTE currency                                                    |
+| highest_price_24h        | decimal  | Highest price of base currency based on given quote currency in the last 24-hrs                          |
+| lowest_price_24h         | decimal  | Lowest price of base currency based on given quote currency in the last 24-hrs                           |
+| isFrozen                 | integer  | Indicates if the market is currently enabled (0) or disabled (1)                                         |
 
 - Examples of returned results:
-```
+
+````json
 {
   "code": 200,
   "msg": "success",
   "data": {
-    "DOGE_BTC": {
-      "id": "doge_btc",
-      "last": "0.00000023",
-      "lowestAsk": "0.00000025",
-      "highestBid": "0.00000022",
-      "percentChange": "0",
-      "baseVolume": "238882079.6813492",
-      "quoteVolume": "57.05787792",
-      "isFrozen": "0",
-      "high24hr": "0.00000026",
-      "low24hr": "0.00000023"
+    "NEO_BTC": {
+      "trading_pairs": "NEO_BTC",
+      "last_price": 0.00065261,
+      "lowest_ask": 0.00067908,
+      "highest_bid": 0.00063344,
+      "base_volume": 45416.0442629,
+      "quote_volume": 27.08912357,
+      "price_change_percent_24h": 0.10083835,
+      "highest_price_24h": 0.00066065,
+      "lowest_price_24h": 0.00057284,
+      "isFrozen": 0
+    },
+    "DASH_USDT": {
+      "trading_pairs": "DASH_USDT",
+      "last_price": 132.10311575,
+      "lowest_ask": 131.56808669,
+      "highest_bid": 130.36191331,
+      "base_volume": 12435.3215763,
+      "quote_volume": 1643753.67962894,
+      "price_change_percent_24h": -0.02291988,
+      "highest_price_24h": 138.51048635,
+      "lowest_price_24h": 127.76041843,
+      "isFrozen": 0
+    },
+    "QDEFI_USDC": {
+      "trading_pairs": "QDEFI_USDC",
+      "last_price": 530.45619326,
+      "lowest_ask": 535.74514215,
+      "highest_bid": 515.00963439,
+      "base_volume": 1576.9987895,
+      "quote_volume": 851803.99399242,
+      "price_change_percent_24h": -0.00486689,
+      "highest_price_24h": 554.77324889,
+      "lowest_price_24h": 522.21109338,
+      "isFrozen": 0
     }
+  }
 }
-```
+````
+
 ---
 
 #### <span id="currentLatest">3. Current latest market</span>
@@ -292,41 +327,62 @@ Path: /api/v1/tickers
 Request type: GET
 ```
 
-- Parameter
+- Ticker response descriptions:
 
-```
-no
-```
+| Name                     |  Type    | Description                                                          |
+| ------------------------ |:--------:| ---------------------------------------------------------------------|
+| base_id                  | integer  | The quote pair Unified Cryptoasset ID                                |
+| quote_id                 | integer  | The base pair Unified Cryptoasset ID.                                |
+| last_price               | decimal  | Last transacted price of base currency based on given quote currency |
+| base_volume              | decimal  | 24-hour trading volume denoted in BASE currency                      |
+| quote_volume             | decimal  | 24 hour trading volume denoted in QUOTE currency                     |
+| isFrozen                 | integer  | Indicates if the market is currently enabled (0) or disabled (1)     |
+| base_name                | string   | Base name                                                            |
+| quote_name               | string   | Quote name                                                           |
 
-- Return result
+- Examples of returned results:
 
-```
-base_name - base name
-quote_name - quote name
-last_price - trade price in the last 24 hours
-base_volume - average price over last 24h
-quote_volume - total 24h traded quote cost
-isFrozen - frozen status: 0 — working, 1 — temporarily suspended
-```
-
-Examples of returned results:
-
-```
+````json
 {
-    "DOGE_BTC": {
-        "base_name": "DOGE",
-        "quote_name": "BTC",
-        "last_price": "0.00000023",
-        "base_volume": "238882079.6813492",
-        "quote_volume": "57.05787792",
-        "isFrozen": "0"
-    }
+  "NEO_BTC": {
+    "base_id": 1376,
+    "quote_id": 1,
+    "last_price": 0.00065735,
+    "base_volume": 45293.4394285,
+    "quote_volume": 27.15526656,
+    "isFrozen": 0,
+    "base_name": "NEO",
+    "quote_name": "BTC"
+  },
+  "DASH_USDT": {
+    "base_id": 131,
+    "quote_id": 825,
+    "last_price": 128.05695508,
+    "base_volume": 12434.7417591,
+    "quote_volume": 1641391.38344901,
+    "isFrozen": 0,
+    "base_name": "DASH",
+    "quote_name": "USDT"
+  },
+  "QDEFI_USDC": {
+    "base_id": null,
+    "quote_id": 3408,
+    "last_price": 530.45619326,
+    "base_volume": 1576.9987895,
+    "quote_volume": 851803.99399242,
+    "isFrozen": 0,
+    "base_name": "QDEFI",
+    "quote_name": "USDC"
+  }
 }
-  
-```
+````
+
 ---
 
 #### <span id="recentMarket">4. Recent market transactions</span>
+
+The order book endpoint is to provide a complete level 2 order book (arranged by best asks/bids) with full depth
+returned for a given market pair.
 
 - Interface
 
@@ -341,86 +397,116 @@ Request type: GET
 btc_usdt
 ```
 
-- Return result
+- Order book response descriptions:
 
-```
-name - pair tickers
-timestamp - unix timestamp(s) of trade
-bids - number fields amount and price
-```
+| Name      |  Type                        | Description                                                                     |
+| ----------|:----------------------------:| --------------------------------------------------------------------------------|
+| timestamp | Integer (UTC timestamp in ms)| Unix timestamp in milliseconds for when the last updated time occurred.         |
+| bids      | decimal                      | An array containing 2 elements. The offer price and quantity for each bid order.|
+| asks      | decimal                      | An array containing 2 elements. The ask price and quantity for each ask order.  |
+
 
 - Examples of returned results:
 
-```
+````json
 {
   "name": "btc_usdt",
-  "timestamp": "1610485860",
+  "timestamp": "1610723505",
   "bids": [
     [
-      "34330.35",
-      "0.02968251"
+      "36523.34",
+      "0.03800598"
     ],
     [
-      "34290.49",
-      "0.03815408"
+      "36485.46312268",
+      "0.02243572"
     ],
     [
-      "34249.74905904",
-      "0.02947742"
+      "36459.43788744",
+      "0.02168365"
+    ]
+  ],
+  "asks": [
+    [
+      "36567.02",
+      "0.03618596"
     ],
+    [
+      "36593.04523524",
+      "0.03434187"
+    ],
+    [
+      "36621.11",
+      "0.03356017"
+    ]
+  ]
 }
-```
+````
 
 ---
 
 #### <span id="recentTrades">5. Recent trades</span>
+The trades endpoint is to return data on all recently completed trades for a given market pair.
 
- - Interface
+| Name        |  Type    | Description            |
+| ------------|:--------:|------------------------|
+| market_pair | string   | A pair such as btc_usdt|
 
+- Interface
 ```
 Path: /api/v1/trades?market_pair=
 ```
 
-  - Parameter
+- Parameter
 
 ```
 btc_usdt
 eth_usdt
 ```
 
-- Return result
+- Trades response descriptions:
+  
+| Name                     |  Type                        | Description                                                                                                                                                                                       |
+| ------------------------ |:----------------------------:| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| trade_id                 | integer                      | A unique ID associated with the trade for the currency pair transaction (Note: Unix timestamp does not qualify as trade_id)                                                                       |
+| price                    | decimal                      | Last transacted price of base currency based on given quote currency                                                                                                                              |
+| base_volume              | decimal                      | Transaction amount in BASE currency                                                                                                                                                               |
+| quote_volume             | decimal                      | Transaction amount in QUOTE currency                                                                                                                                                              |
+| trade_timestamp          | decimal (UTC timestamp in ms)| Unix timestamp in milliseconds for when the transaction occurred.                                                                                                                                 |
+| type                     | string                       | Used to determine whether or not the transaction originated as a buy or sell. (Buy – Identifies an ask was removed from the order book. Sell – Identifies a bid was removed from the order book)  |
 
-```
-tradeID - order identifier
-price - trade price
-base_volume - amount in base currency
-quote_volume - amount in quote currency
-trade_timestamp - unix timestamp(s) of trade
-type - transaction type "buy" or "sell"
-```
 
- Examples of returned results:
+- Examples of returned results:
 
-```
+```json
 [
   {
-    "tradeID": "1431582",
-    "price": "31866.359002",
-    "base_volume": "0.0001",
-    "quote_volume": "3.1866359002",
-    "trade_timestamp": "1610397055",
-    "type": "buy"
+    "trade_id": 1440237,
+    "price": 39881.21019433,
+    "base_volume": 0.01,
+    "quote_volume": 398.8121019433,
+    "trade_timestamp": 1610638460,
+    "type": "sell"
   },
   {
-    "tradeID": "1431583",
-    "price": "31969.87999449",
-    "base_volume": "0.116",
-    "quote_volume": "3708.50607936084",
-    "trade_timestamp": "1610397125",
+    "trade_id": 1440238,
+    "price": 39881.01436764,
+    "base_volume": 0.259,
+    "quote_volume": 10329.18272121876,
+    "trade_timestamp": 1610638481,
     "type": "sell"
+  },
+  {
+    "trade_id": 1440239,
+    "price": 39879.31844183,
+    "base_volume": 0.3506194,
+    "quote_volume": 13982.462704483369,
+    "trade_timestamp": 1610638525,
+    "type": "buy"
   }
 ]
 ```
+
 ---
 
 ## <span id="privateApi">Private API</span>
@@ -833,4 +919,5 @@ GET /frontoffice/api/info
     ]
 }
 ```
+
 ---
